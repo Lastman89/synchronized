@@ -29,10 +29,11 @@ public class Main {
             });
             threads.add(thread);//добавляем в массив потоков каждый новый
             thread.start();//стартуем поток
+            for (Thread thread_1 : threads) {
+                thread_1.join(); // зависаем, ждём когда поток объект которого лежит в thread завершится
+            }
         }
-        for (Thread thread_1 : threads) {
-            thread_1.join(); // зависаем, ждём когда поток объект которого лежит в thread завершится
-        }
+
 
         System.out.println("Самое частое количество повторений " +
                 sizeToFreq.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey() +
