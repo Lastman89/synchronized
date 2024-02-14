@@ -5,17 +5,17 @@ import java.util.concurrent.*;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         final int countTrack = 100;
         char find = 'R';
         Map<Integer, Integer> sizeToFreq = new HashMap<>();
 
         // Создаём пул потоков
-        ExecutorService executor = Executors.newFixedThreadPool(countTrack);
+        List<Thread> threads = new ArrayList<>();;
 
         for (int i = 0; i < countTrack; i++) {
             //задание для каждого нового потока
-            Runnable task = () -> {
+            Thread thread = new Thread(() -> {
                 String maxLeght = generateRoute("RLRFR", 100);
                 int Count = (int) maxLeght.chars().filter(ch -> ch == find).count();
                 //критическая секция мапы, запускаем по одному потоку
@@ -26,12 +26,13 @@ public class Main {
                         sizeToFreq.put(Count, 1);
                     }
                 }
-            };
-            // Отправляем задачу на выполнение в пул потоков
-            Future<Integer> newTask = (Future<Integer>) executor.submit(task);
+            });
+            threads.add(thread);//добавляем в массив потоков каждый новый
+            thread.start();//стартуем поток
         }
-        // Завершаем работу пула потоков
-        executor.shutdown();
+        for (Thread thread_1 : threads) {
+            thread_1.join(); // зависаем, ждём когда поток объект которого лежит в thread завершится
+        }
 
         System.out.println("Самое частое количество повторений " +
                 sizeToFreq.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey() +
