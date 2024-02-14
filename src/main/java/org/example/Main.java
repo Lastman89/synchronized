@@ -26,7 +26,7 @@ public class Main {
                     } else {
                         sizeToFreq.put(Count, 1);
                     }
-                    threads.notify();
+                    threads.notify(); //сообщаем о возможности работы вторым потоком
                 }
 
             });
@@ -35,7 +35,7 @@ public class Main {
                     synchronized (threads) {
                         if (threads.isEmpty()) {
                             try {
-                                threads.wait();
+                                threads.wait();//ожидание сигнала о возможности обработки
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
